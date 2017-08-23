@@ -1,0 +1,127 @@
+body {
+    position:relative;
+font-family:"Courier New", monospace;
+font-size: 17px;
+background: #370f29;
+color: #21f838;
+padding: 0px;
+overflow: hidden;
+height: 20px;
+cursor:text;
+
+}
+.container {
+margin: 50px auto;
+height: 600px;
+width: 950px;
+position:relative;
+border:1px solid #21f838;
+}
+td {
+    width: 11px;
+}
+table.Q td {
+    padding:0;
+
+}
+button {
+    position:relative;
+font-family:"Courier New", monospace;
+font-size: 17px;
+background: #370f29;
+color: #21f838;
+padding: 0px;
+height: 20px;
+cursor:text;
+border : none;
+}
+form{
+  /*フォームをページの中央に置く*/
+  margin: 0 auto;
+  width: 400px;
+  /*フォームの範囲がわかるようにする*/
+  padding: 1em;
+  border:1px solid #21f838;
+  border-radius: 1em;
+  float:left;
+}
+
+form div+div{
+margin-top:1em;
+/*フォームの中のdivとdivが隣接しているところだけ*/
+}
+
+label{
+  /*全てのラベルを同じサイズにして、揃える*/
+  display:inline-block;
+  width:200px;
+  text-align:right;
+}
+
+#name {
+    display:none;
+}
+/*フォント、サイズボーダーの外見を調和させる。*/
+input,textarea{
+    font-family:"Courier New", monospace;
+    font-size: 17px;
+    color: #21f838;
+    background-color:#370f29;
+  /*全てのテキストフィールドのフォント設定を一致させるデフォルトで、textareaは等幅フォントが設定されている*/
+  font: 1em sans-srif;
+  /*全てのテキストフィールドを同じサイズにする*/
+  width:400px;
+  -webkit-box-sizing: border-box;
+  box-sizing:border-box;
+  /*テキストフィールドのボーダーの外見を同一にする*/
+border:1px solid #21f838;
+}
+
+input:focus, textarea:focus {
+    /* アクティブな要素を少し強調する */
+    border-color: #000;
+}
+
+
+textarea {
+    /* 複数行のテキストフィールドをラベルにきちんと揃える */
+    vertical-align: top;
+
+    /* テキスト入力に十分な領域を与える */
+    height: 5em;
+
+    /* ユーザが textarea を垂直方向にリサイズできるようにする
+       これが動作しないブラウザもある */
+    resize: vertical;
+  }
+
+  .button {
+    /* ボタンを他のテキストフィールドと同じ場所に置く */
+    padding-left: 90px; /* label 要素と同じサイズ */
+}
+
+button {
+    /* このマージンは、ラベルとテキストフィールドの間のスペースと
+       おおよそ同じスペースを表す */
+    margin-left: .5em;
+}
+div#time{
+  font-size:0.3em;
+  text-align: right;
+  width:200px;
+  margin-left:1em;
+}
+
+div#result{
+  margin:0 auto;
+  width:434px;
+  float:left;
+  padding-left: 10px;
+  padding-top: 10px;
+  word-break:break-all
+
+}
+
+br{
+  font-size:20px;
+}
