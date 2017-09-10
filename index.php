@@ -14,33 +14,39 @@ header("Location:{$_SERVER['REQUEST_URI']}");
 
     <body>
         <div class="container">
-            <div id="typstring"></div>
-            <div id="time"></div>
-        </div>
-        <button type="button" onClick="gameSet()" name="startGame" value="start">
-            <font>Press Space </font>
-    </button>
-        <!-- フォーム -->
-        <form method="POST" action="index.php">
-            <!-- 時刻表示 -->
-            <div id="time">
-                <?php
+            <div id="typstring">Text is empty. Please create.</div>
+        <div id="stopwatch">STATUS<br>ALL : 0 Collect : 0 left : 0 miss : 0</div>
+
+
+
+
+            <!-- フォーム -->
+            <form method="POST" action="index.php">
+                <!-- 時刻表示 -->
+                <div id="time">
+                    <?php
                       $date = date("Y/m/d H:i:s");
                 ?>
-            </div>
-<div id="name">
-<label for="name">Name:</label>
-             <input  id="name" name="name" />
-           </div>
+                </div>
+                <div id="name">
+                    <label for="name">Name:</label>
+                    <input id="name" name="name" />
+                </div>
 
-        <div>
-                <label for="message">practice text</label>
-                <textarea id="message" name="message"></textarea>
-            </div>
-            <div class="button">
-                <button type="submit">Send</button>
-            </div>
-        </form>
+                <div>
+                    <label for="message">input practice text and push create</label>
+                    <textarea id="message" name="message"></textarea>
+                </div>
+
+                    <button type="submit">create</button>
+        <button type="button" onClick="gameSet()" name="startGame" value="start">
+            <font>Press Space to start</font>
+    </button>
+
+            </form>
+
+        </div>
+
         <!-- 接続 -->
         <?php
 //mysqliクラスのオブジェクトを作成
@@ -79,27 +85,37 @@ if($result){
   while($row = $result->fetch_object()){
     //エスケープして表示
     $name = htmlspecialchars($row->name);
-    $message = htmlspecialchars($row->message);
-    $messagenl = nl2br($message);
-    $created = htmlspecialchars($row->created);
+    $message = htmlentities($row->message);
+//    $message = $row->message;
+//    $message = htmlspecialchars($row->message);
+//    $messagenl = nl2br($message);
+//    $created = htmlspecialchars($row->created);
 //    print("$created : $name<br> $messagenl<br>");
   }
 }
   //javascript<->PHP間の変数受け渡しテスト
-$tojavascript = str_replace(array("\r\n","\r","\n"), ' ', $message);
+
+//改行をなくす
+$$message =str_replace(array("\r\n","\r","\n"), '', $message);
+//バックスラッシュをエスケープ
+$message = str_replace("\\", "\\\\", $message);
+//ダブルクウォートをエスケープ(javascriptに渡すときにダブルクウォートで囲っているため)
+//$tojavascript = str_replace("\"", "\\\"", $tojavascript1);
 //scriptはこの後に書かないと変数を渡せないようだ
+$tojavascript = $message;
+
 ?>
-                </div>
-                <!-- 切断 -->
-                <?php
+
+                        <!-- 切断 -->
+                        <?php
 $mysqli->close();
 ?>
-                <script type="text/javascript">
-                    //外部javascriptに渡す文字列(グローバル変数になる)
-                    var tojavascript = "<?php echo $tojavascript; ?>";
-                </script>
-                <script type="text/javascript" src="typing.js">
-                </script>
+                        <script type="text/javascript">
+                            //外部javascriptに渡す文字列(グローバル変数になる)
+                            var tojavascript = "<?php echo $tojavascript; ?>";
+                        </script>
+                        <script type="text/javascript" src="typing.js">
+                        </script>
     </body>
 
     </html>

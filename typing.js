@@ -1,51 +1,73 @@
 document.onkeydown = typeGame; //キー押下時に関数tpypeGame()を呼び出す
-
+document.onkeyup = shiftUp;
 //文字を格納する配列(keyCodeの並び順と同じ並びにする)
 var upperElement = ["A", "B", "C", "D", "E", "F", "G", "H", "I",
     "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-    "S", "T", "U", "V", "W", "X", "Y", "Z", " "];
+    "S", "T", "U", "V", "W", "X", "Y", "Z",
+    " ", "_", "+", "\|", "~", "{", "}", ":", "\"", "<", ">", "?",
+    ")", "!", "@", "#", "$", "%", "^", "&", "*", "(",
+];
 var lowerElement = ["a", "b", "c", "d", "e", "f", "g", "h", "i",
     "j", "k", "l", "m", "n", "o", "p", "q", "r",
-    "s", "t", "u", "v", "w", "x", "y", "z", " "
+    "s", "t", "u", "v", "w", "x", "y", "z",
+    " ", "-", "=", "\\", "\`", "[", "]", ";", "'", ",", ".", "/",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 ];
 //キーコードを格納する配列(upper/lowerElementと同じ並びにする)
-var keyCode = new Array(65, 66, 67, 68, 69, 70, 71, 72, 73,
+var keyCode = [65, 66, 67, 68, 69, 70, 71, 72, 73,
     74, 75, 76, 77, 78, 79, 80, 81, 82,
-    83, 84, 85, 86, 87, 88, 89, 90, 32);
+    83, 84, 85, 86, 87, 88, 89, 90,
+    32, 189, 187, 220, 192, 219, 221, 186, 222, 188, 190, 191,
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57
+];
+//問題文字列の文字が大文字か小文字かを区別するためのフラグ
+var shiftFlg = [];
 
 //inputKeycode ==keyCode[ elementIndex[0] ]みたいに使う
 //つまり、keyCode配列の添字として使う。
-var elementIndex = new Array();
+var elementIndex = [];
 
 //グローバル変数群
 var typStrings = ""; //問題の文字列すべてを格納
 var cnt = 0; //何文字目かを格納
-var miss = 0;//ミスタイプの数
+var miss = 0; //ミスタイプの数
 var typStart, typEnd; //開始時と終了時の時刻を格納
 var ans = 0; //回答数
 var typStringsLength = 0; //問題文の長さ
 var nowGaming = false; //ゲーム中かどうかフラグ
 var gameSetFlag = false; //ゲームを最後までやったかフラグ
-
+var shiftCheck = 0; //シフトが押された状態かを区別する
 //dat配列にMessageを一文字ずつ格納していく関数
-var dat=[];
-function createDat(){
-    for(var i=0;i<tojavascript.length;i++){
+var dat = [];
+
+function createDat() {
+    tojavascript = tojavascript .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') .replace(/&quot;/g, '"') .replace(/&#039;/g, '\'') .replace(/&#044;/g, ',') .replace(/&amp;/g, '&');
+    for (var i = 0; i < tojavascript.length; i++) {
         dat[i] = tojavascript.charAt(i);
-                                       }
+    }
 }
 
 //問題の文字列をキーボード番号に対応させる。
 function mapTypStrings(typStrings) {
+
     for (var i = 0; i < typStrings.length; i++) {
         //問題の文字列のi番目の文字を探すためにserchに文字を格納する。
         var serch = typStrings.charAt(i);
+        console.log(serch + "をserchします");
+        //これでアクセスできるやん
+        //        console.log("test : "+ element[i]['upperElement']);
         //serchが大文字の要素の何番目にあるかを探し、
         //後にkeyCodeの添字として使うためにelementIndex配列に格納していく。
-        elementIndex[i] = upperElement.indexOf(serch);
-        //見つからない場合は-1を返す→小文字の要素の方から探す。
+        elementIndex[i] = lowerElement.indexOf(serch);
+        if (elementIndex[i] != -1) {
+            shiftFlg[i] = 0;
+            console.log("elementIndexが見つかりました : " + elementIndex[i] + "shiftflg : " + shiftFlg[i]);
+        }
+        //見つからない場合は-1を返す→大文字の要素の方から探す。
         if (elementIndex[i] < 0) {
-            elementIndex[i] = lowerElement.indexOf(serch);
+            elementIndex[i] = upperElement.indexOf(serch);
+            shiftFlg[i] = 1;
+            console.log("見つからないのでUpperから探しelementindexは : " + elementIndex[i] + "shiftflg : " + shiftFlg[i]);
         }
     }
 }
@@ -101,8 +123,9 @@ function showtypStrings(typStrings) {
 
 //タイピングゲームの問題をセットする関数
 function gameSet() {
+    window.focus();
     nowGaming = true; //ゲーム中になる
-    gameSetFlag = false;//ゲーム中になる
+    gameSetFlag = false; //ゲーム中になる
     //問題文とカウント数をクリアする
     cnt = 0;
     miss = 0;
@@ -128,9 +151,26 @@ var flg = true;
 //var countBlink = 0;
 var nextIdName = 0;
 
+//shiftが押された場合は1を返す。
+function shiftDwn() {
+    if (event.keyCode == '16') {
+        shiftCheck = 1;
+    }
+    console.log("shiftCheck : " + shiftCheck);
+}
+
+//document.onkeyupで呼ばれる関数。キーが離されたときに呼ばれる。
+//shiftが離された場合は0を返す。
+function shiftUp() {
+    if (event.keyCode == '16') {
+        shiftCheck = 0;
+    }
+    console.log("shiftCheck : " + shiftCheck);
+}
 //キー入力を受け取る関数
 function typeGame(evt) {
     var inputKeycode; //入力されたキーコードを格納する変数
+
     //点滅のカウントをクリア
     countBlink = 0;
 
@@ -140,15 +180,17 @@ function typeGame(evt) {
     } else {
         inputKeycode = evt.which;
     }
+    //シフトが押されたらshiftCheckを1にする。
+    shiftDwn();
     //スペースが押されたらゲームスタート
     if (inputKeycode == '32' && !nowGaming) gameSet();
     //rが押されたらリスタート
     if (inputKeycode == '82' && gameSetFlag) gameSet();
     //ゲーム中にescが押されたらリスタート
-    if(inputKeycode == '27' && nowGaming) gameSet();
-    
+    if (inputKeycode == '27' && nowGaming) gameSet();
+    console.log("inputKeycode is : " + inputKeycode);
     //入力されたキーコードと、問題文のキーコードを比較
-    if (inputKeycode == keyCode[elementIndex[cnt]]) {
+    if (inputKeycode == keyCode[elementIndex[cnt]] && shiftCheck == shiftFlg[cnt]) {
         //キーコードが一致した時の処理
 
         //最初の1文字が入力された時間を記録する
@@ -173,8 +215,8 @@ function typeGame(evt) {
         if (cnt < typStringsLength) {
 
             //問題枠に表示する
-            document.getElementById("time").innerHTML = "ALL : " + typStringsLength + " Collect : " + cnt +
-                " left : " + (typStringsLength - cnt) + " miss " + miss;
+            document.getElementById("stopwatch").innerHTML = "STATUS<br>" + "ALL : " + typStringsLength + " Collect : " + cnt +
+                " left : " + (typStringsLength - cnt) + " miss : " + miss;
 
         } else {
             //全文字入力していたら、終了時間を記録する
@@ -194,14 +236,14 @@ function typeGame(evt) {
 
             //ゲームセットの判定
             gameSetFlag = true;
-            
+
             //問題枠にゲーム終了を表示
             document.getElementById("typstring").innerHTML = fin;
-            document.getElementById("time").innerHTML = "All : " + typStringsLength + " Collect : " + cnt + " left : " + (typStringsLength - cnt) + " miss " + miss;
+            document.getElementById("stopwatch").innerHTML = "STATUS<br>" + "ALL : " + typStringsLength + " Collect : " + cnt + " left : " + (typStringsLength - cnt) + " miss : " + miss;
 
         }
-    }else{ //不正解の場合はここにelse
-        if(cnt !== 0 && gameSetFlag !== true) miss++;
-         document.getElementById("time").innerHTML = "All : " + typStringsLength + " Collect : " + cnt + " left : " + (typStringsLength - cnt) + " miss " + miss;
+    } else { //不正解の場合はここにelse
+        if (cnt !== 0 && gameSetFlag !== true) miss++;
+        document.getElementById("stopwatch").innerHTML = "STATUS<br>" + "ALL : " + typStringsLength + " Collect : " + cnt + " left : " + (typStringsLength - cnt) + " miss : " + miss;
     }
 }
