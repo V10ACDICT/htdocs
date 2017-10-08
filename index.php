@@ -96,7 +96,7 @@ if($result){
   //javascript<->PHP間の変数受け渡しテスト
 
 //改行をなくす
-$$message =str_replace(array("\r\n","\r","\n"), '', $message);
+$message =str_replace(array("\r\n","\r","\n"), '', $message);
 //バックスラッシュをエスケープ
 $message = str_replace("\\", "\\\\", $message);
 //ダブルクウォートをエスケープ(javascriptに渡すときにダブルクウォートで囲っているため)
