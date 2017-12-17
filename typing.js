@@ -72,62 +72,21 @@ function mapTypStrings(typStrings) {
     }
 }
 //表示の方法を検討
+//TODO改行の連続する箇所、<tr>が抜けるはずだが何故かうまく表示されている
+//TODO ゲーム性
 function showtypStrings(typStrings) {
-    //一行あたりの最大文字数、一画面あたりの最大行数を固定する。変更可。
-    var maxCharPerLine = 80;
-    var maxLinePerScreen = 50;
-    //実際に表示する一行あたりの文字数、行数を格納する。
-    var oneLine = maxCharPerLine;
-    var oneScreen = maxLinePerScreen;
-    //最後の一行対策
-    var lastLineFlag = 0;
-    //問題文の文字列の添字を格納
-    var idnum = 0;
 
-    //問題文が一行以下になる時は表示する一行あたりの文字数を問題文の文字数と同じにしておく。
-    //TODO そうではなく、最後に改行文字を付加してそれを終了の判定に使う。
-    if (typStrings.length < maxCharPerLine) {
-        oneLine = typStrings.length;
-    }
-    //問題文が50行未満になるときは表示する行数は一行あたりの文字数で割った行数分とする。
-    if (typStrings.length / maxCharPerLine < maxLinePerScreen) {
-//        oneScreen = parseInt(typStrings.length / oneLine);
-        //この場合は最後の一行対策が必要
-        lastLineFlag = 1;
-    }
     //htmlには問題文にタグを付けて送る。
     var decolatedTypString = "<table class='Q'>";
-    //iは行方向を表す。
-    for (var i = 0; i < oneScreen; i++) {
-
-        decolatedTypString += "<tr>";
-        //内側のループで一文字ずつにタグをつける。
-        var j = 0;
-        while((typStrings[idnum] !=  '↲')){
-//        for (var j = 0; j < oneLine; j++) {
-//            idnum = i * oneLine + j;
-                    console.log(typStrings[idnum] + "にタグをつける処理");
-            decolatedTypString += "<td id='word" + idnum + "'>" + typStrings[idnum] + "</td>";
-            idnum++;
-            j++;
-            //TODO 改行の処理
-//            if(typStrings[idnum] == '↲'){console.log("改行！！！");decolatedTypString += "</tr>";}
-        }
-
-        decolatedTypString += "<td id='word" + idnum + "'>" + "↲" + "</td>";
-        idnum++;
-        decolatedTypString += "</tr>";
-//        //最後の一行で残りの問題文を出力する。
-//        if (i == oneScreen - 1 && lastLineFlag == 1) {
-//            decolatedTypString += "<tr>";
-//            for (var k = 0; k < typStrings.length % oneLine; k++) {
-//                idnum++;
-//                decolatedTypString += "<td id='word" + idnum + "'>" + typStrings[idnum] + "</td>";
-//            }
-//            decolatedTypString += "</tr>";
-//        }
+    decolatedTypString += "<tr>";
+    //内側のループで一文字ずつにタグをつける。
+    for(let c in typStrings){
+        if( typStrings[c] == '↲' ){
+            decolatedTypString += "<td id='word" + c + "'>" + typStrings[c] + "</td>" + "</tr>";                                
+        }else{
+            decolatedTypString += "<td id='word" + c + "'>" + typStrings[c] + "</td>";                
+       }         
     }
-//    decolatedTypString += "</tr>";
     decolatedTypString += "</table>";
     document.getElementById("typstring").innerHTML = decolatedTypString;
 }
