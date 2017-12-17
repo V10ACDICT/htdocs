@@ -71,7 +71,6 @@ function mapTypStrings(typStrings) {
         }
     }
 }
-
 //表示の方法を検討
 function showtypStrings(typStrings) {
     //一行あたりの最大文字数、一画面あたりの最大行数を固定する。変更可。

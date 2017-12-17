@@ -5,13 +5,11 @@ header("Location:{$_SERVER['REQUEST_URI']}");
 ?>
 <DOCTYPE html>
     <html>
-
     <head>
         <meta charset="UTF-8" />
         <title>typingmachine</title>
         <link rel="stylesheet" href="style.css">
     </head>
-
     <body>
     <div class="container">
 
