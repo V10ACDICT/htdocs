@@ -11,14 +11,14 @@ var lowerElement = ["a", "b", "c", "d", "e", "f", "g", "h", "i",
     "j", "k", "l", "m", "n", "o", "p", "q", "r",
     "s", "t", "u", "v", "w", "x", "y", "z",
     " ", "-", "=", "\\", "\`", "[", "]", ";", "'", ",", ".", "/",
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","↲",
 ];
 //キーコードを格納する配列(upper/lowerElementと同じ並びにする)
 var keyCode = [65, 66, 67, 68, 69, 70, 71, 72, 73,
     74, 75, 76, 77, 78, 79, 80, 81, 82,
     83, 84, 85, 86, 87, 88, 89, 90,
     32, 189, 187, 220, 192, 219, 221, 186, 222, 188, 190, 191,
-    48, 49, 50, 51, 52, 53, 54, 55, 56, 57
+               48, 49, 50, 51, 52, 53, 54, 55, 56, 57,13,
 ];
 //問題文字列の文字が大文字か小文字かを区別するためのフラグ
 var shiftFlg = [];
@@ -41,7 +41,7 @@ var shiftCheck = 0; //シフトが押された状態かを区別する
 var dat = [];
 
 function createDat() {
-    tojavascript = tojavascript .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') .replace(/&quot;/g, '"') .replace(/&#039;/g, '\'') .replace(/&#044;/g, ',') .replace(/&amp;/g, '&');
+    tojavascript = tojavascript .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') .replace(/&quot;/g, '"') .replace(/&#039;/g, '\'') .replace(/&#044;/g, ',') .replace(/&amp;/g, '&').replace(/\r\n/g, "↲").replace(/(\n|\r)/g, "↲");
     for (var i = 0; i < tojavascript.length; i++) {
         dat[i] = tojavascript.charAt(i);
     }
@@ -75,7 +75,7 @@ function mapTypStrings(typStrings) {
 //表示の方法を検討
 function showtypStrings(typStrings) {
     //一行あたりの最大文字数、一画面あたりの最大行数を固定する。変更可。
-    var maxCharPerLine = 40;
+    var maxCharPerLine = 80;
     var maxLinePerScreen = 50;
     //実際に表示する一行あたりの文字数、行数を格納する。
     var oneLine = maxCharPerLine;
@@ -83,15 +83,16 @@ function showtypStrings(typStrings) {
     //最後の一行対策
     var lastLineFlag = 0;
     //問題文の文字列の添字を格納
-    var idnum;
+    var idnum = 0;
 
-    //問題文が一行未満になる時は表示する一行あたりの文字数を問題文の文字数と同じにしておく。
+    //問題文が一行以下になる時は表示する一行あたりの文字数を問題文の文字数と同じにしておく。
+    //TODO そうではなく、最後に改行文字を付加してそれを終了の判定に使う。
     if (typStrings.length < maxCharPerLine) {
         oneLine = typStrings.length;
     }
     //問題文が50行未満になるときは表示する行数は一行あたりの文字数で割った行数分とする。
     if (typStrings.length / maxCharPerLine < maxLinePerScreen) {
-        oneScreen = parseInt(typStrings.length / oneLine);
+//        oneScreen = parseInt(typStrings.length / oneLine);
         //この場合は最後の一行対策が必要
         lastLineFlag = 1;
     }
@@ -99,24 +100,35 @@ function showtypStrings(typStrings) {
     var decolatedTypString = "<table class='Q'>";
     //iは行方向を表す。
     for (var i = 0; i < oneScreen; i++) {
+
         decolatedTypString += "<tr>";
         //内側のループで一文字ずつにタグをつける。
-        for (var j = 0; j < oneLine; j++) {
-            idnum = i * oneLine + j;
+        var j = 0;
+        while((typStrings[idnum] !=  '↲')){
+//        for (var j = 0; j < oneLine; j++) {
+//            idnum = i * oneLine + j;
+                    console.log(typStrings[idnum] + "にタグをつける処理");
             decolatedTypString += "<td id='word" + idnum + "'>" + typStrings[idnum] + "</td>";
+            idnum++;
+            j++;
+            //TODO 改行の処理
+//            if(typStrings[idnum] == '↲'){console.log("改行！！！");decolatedTypString += "</tr>";}
         }
+
+        decolatedTypString += "<td id='word" + idnum + "'>" + "↲" + "</td>";
+        idnum++;
         decolatedTypString += "</tr>";
-        //最後の一行で残りの問題文を出力する。
-        if (i == oneScreen - 1 && lastLineFlag == 1) {
-            decolatedTypString += "<tr>";
-            for (var k = 0; k < typStrings.length % oneLine; k++) {
-                idnum++;
-                decolatedTypString += "<td id='word" + idnum + "'>" + typStrings[idnum] + "</td>";
-            }
-            decolatedTypString += "</tr>";
-        }
+//        //最後の一行で残りの問題文を出力する。
+//        if (i == oneScreen - 1 && lastLineFlag == 1) {
+//            decolatedTypString += "<tr>";
+//            for (var k = 0; k < typStrings.length % oneLine; k++) {
+//                idnum++;
+//                decolatedTypString += "<td id='word" + idnum + "'>" + typStrings[idnum] + "</td>";
+//            }
+//            decolatedTypString += "</tr>";
+//        }
     }
-    decolatedTypString += "</tr>";
+//    decolatedTypString += "</tr>";
     decolatedTypString += "</table>";
     document.getElementById("typstring").innerHTML = decolatedTypString;
 }
