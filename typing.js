@@ -41,7 +41,7 @@ var shiftCheck = 0; //シフトが押された状態かを区別する
 var dat = [];
 
 function createDat() {
-    tojavascript = tojavascript .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') .replace(/&quot;/g, '"') .replace(/&#039;/g, '\'') .replace(/&#044;/g, ',') .replace(/&amp;/g, '&').replace(/\r\n/g, "↲").replace(/(\n|\r)/g, "↲");
+    tojavascript = tojavascript .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') .replace(/&quot;/g, '"') .replace(/&#039;/g, '\'') .replace(/&#044;/g, ',') .replace(/&amp;/g, '&').replace(/\r\n/g, "↲").replace(/(\n|\r)/g, "↲").replace(/\t/g, "    ");
     for (var i = 0; i < tojavascript.length; i++) {
         dat[i] = tojavascript.charAt(i);
     }
@@ -49,7 +49,7 @@ function createDat() {
 
 //問題の文字列をキーボード番号に対応させる。
 function mapTypStrings(typStrings) {
-
+    shiftUp();
     for (var i = 0; i < typStrings.length; i++) {
         //問題の文字列のi番目の文字を探すためにserchに文字を格納する。
         var serch = typStrings.charAt(i);
