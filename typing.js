@@ -217,3 +217,6 @@ function typeGame(evt) {
         document.getElementById("stopwatch").innerHTML = "STATUS<br>" + "ALL : " + typStringsLength + " Collect : " + cnt + " left : " + (typStringsLength - cnt) + " miss : " + miss;
     }
 }
+
+
+
